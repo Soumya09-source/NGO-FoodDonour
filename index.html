@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Akshaya Ahar – Food Donor</title>
+<meta name="theme-color" content="#1F5B3A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Akshaya Ahar">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --leaf:#1F5B3A; --leaf-soft:#E6F0E9; --turmeric:#E0A526; --turmeric-soft:#FBF1D6;
+  --chili:#B3402A; --bg:#F7FAF7; --surface:#FFFFFF; --ink:#18221D; --muted:#5B6A62; --line:#D5E0D8;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --leaf:#7CC49A; --leaf-soft:#1C2E24; --turmeric:#F0C052; --turmeric-soft:#3A3018;
+    --chili:#E27A62; --bg:#101713; --surface:#18221C; --ink:#E7EFE9; --muted:#9AAAA1; --line:#2C3A32;
+  }
+}
+:root[data-theme="dark"]{
+  --leaf:#7CC49A; --leaf-soft:#1C2E24; --turmeric:#F0C052; --turmeric-soft:#3A3018;
+  --chili:#E27A62; --bg:#101713; --surface:#18221C; --ink:#E7EFE9; --muted:#9AAAA1; --line:#2C3A32;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;transition:background .2s,color .2s;background:var(--bg);color:var(--ink);font-family:"Mukta",system-ui,sans-serif;font-size:16px;line-height:1.5}
+.app{max-width:480px;margin:0 auto;padding:0 16px 40px}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 0 10px}
+.brand{font-family:"Baloo 2",system-ui,sans-serif;font-weight:700;font-size:1.6rem;color:var(--leaf);line-height:1}
+.brand small{display:block;font-family:"Mukta",sans-serif;font-weight:500;font-size:.8rem;color:var(--muted);margin-top:4px}
+.devtoggle{font-size:.8rem;color:var(--muted);display:flex;gap:6px;align-items:center;cursor:pointer}
+.steps{display:flex;gap:6px;margin:6px 0 18px}
+.steps span{flex:1;height:5px;border-radius:3px;background:var(--line)}
+.steps span.on{background:var(--leaf)}
+h1{font-family:"Baloo 2",system-ui,sans-serif;font-weight:700;font-size:1.5rem;margin:0 0 4px;line-height:1.2}
+.lead{color:var(--muted);margin:0 0 18px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+label{display:block;font-weight:600;font-size:.92rem;margin:12px 0 4px}
+label:first-child{margin-top:0}
+input,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--turmeric);outline-offset:1px}
+.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid transparent;padding:11px 16px;font-weight:600}
+.primary{background:var(--leaf);color:var(--surface);width:100%;margin-top:16px}
+.secondary{background:transparent;border-color:var(--line);color:var(--ink)}
+.ghost{background:var(--leaf-soft);color:var(--leaf)}
+.danger{background:transparent;border-color:var(--chili);color:var(--chili)}
+.tabs{display:flex;background:var(--leaf-soft);border-radius:10px;padding:4px;margin-bottom:14px}
+.tabs button{flex:1;background:transparent;color:var(--muted);padding:8px}
+.tabs button.on{background:var(--surface);color:var(--leaf)}
+.err{color:var(--chili);font-size:.88rem;margin-top:8px;min-height:1.2em}
+.hint{color:var(--muted);font-size:.85rem;margin-top:6px}
+.loc{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--leaf-soft);color:var(--leaf);font-size:.9rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--bg);border:1px solid var(--line);color:var(--ink);padding:7px 12px;border-radius:999px;font-weight:500;display:flex;align-items:center;gap:6px}
+.chip.added{border-color:var(--leaf);background:var(--leaf-soft);color:var(--leaf)}
+.dot{width:10px;height:10px;border:1.5px solid currentColor;border-radius:2px;display:inline-grid;place-items:center;flex:none}
+.dot::after{content:"";width:4px;height:4px;border-radius:50%;background:currentColor}
+.t-VEG{color:#2E8B4E}.t-NON_VEG{color:var(--chili)}.t-SWEETS{color:#C98A0B}.t-PACKAGED{color:#4C6FA8}
+.item{border-top:1px solid var(--line);padding:14px 0}
+.item:first-child{border-top:0;padding-top:0}
+.itemhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.itemname{font-weight:600;display:flex;align-items:center;gap:8px}
+.remove{background:none;color:var(--muted);padding:4px 8px;font-size:.85rem}
+.unit{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.unit button{flex:1;background:var(--bg);color:var(--muted);border-radius:0;padding:10px 6px;font-weight:500}
+.unit button.on{background:var(--leaf);color:var(--surface)}
+.eq{font-size:.8rem;color:var(--muted);margin-bottom:4px}
+.feeds{margin-top:4px;padding:16px;border-radius:14px;background:var(--turmeric-soft);display:flex;align-items:baseline;gap:10px}
+.feeds b{font-family:"Baloo 2",sans-serif;font-size:2.2rem;line-height:1;color:var(--ink)}
+.feeds span{color:var(--ink)}
+.empty{color:var(--muted);text-align:center;padding:12px 0}
+.summary dt{color:var(--muted);font-size:.85rem}
+.summary dd{margin:0 0 10px;font-weight:500}
+.timeline{list-style:none;margin:0;padding:0}
+.timeline li{position:relative;padding:0 0 18px 26px}
+.timeline li::before{content:"";position:absolute;left:5px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--line)}
+.timeline li::after{content:"";position:absolute;left:10px;top:20px;bottom:0;width:2px;background:var(--line)}
+.timeline li:last-child::after{display:none}
+.timeline li.done::before{background:var(--leaf)}
+.timeline li.now::before{background:var(--turmeric)}
+.timeline small{display:block;color:var(--muted)}
+.ext{border:1.5px dashed var(--line);border-radius:12px;padding:12px;color:var(--muted);font-size:.9rem;margin-top:6px}
+.tag{display:none;font-size:.72rem;font-family:ui-monospace,Menlo,monospace;color:var(--leaf);background:var(--leaf-soft);padding:1px 6px;border-radius:5px;margin-left:6px;vertical-align:middle;font-weight:400}
+body.dev .tag{display:inline-block}
+.btnrow{display:flex;gap:10px;margin-top:14px}.btnrow>*{flex:1}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90%}
+.toast.show{opacity:1}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.themebtn{background:var(--surface);border:1px solid var(--line);color:var(--ink);padding:6px 12px;border-radius:999px;font-weight:500;font-size:.85rem;display:flex;gap:6px;align-items:center}
+.install{display:flex;align-items:center;gap:12px;background:var(--leaf-soft);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.install p{margin:0;flex:1;font-size:.9rem}
+.install button{padding:8px 14px}
+.install .x{background:none;color:var(--muted);padding:4px 6px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">Akshaya Ahar<small>Share surplus food, feed more people</small></div>
+    <div class="hdr-right">
+      <button class="themebtn" id="themeBtn" aria-label="Switch light or dark mode"></button>
+      <label class="devtoggle"><input type="checkbox" id="devToggle" style="width:auto"> Class names</label>
+    </div>
+  </header>
+  <div class="install" id="installBar" hidden>
+    <p id="installText">Install Akshaya Ahar on your phone for quick access.</p>
+    <button class="primary" id="installBtn" style="width:auto;margin:0">Install</button>
+    <button class="x" id="installClose" aria-label="Dismiss">✕</button>
+  </div>
+  <div class="steps" id="steps"><span></span><span></span><span></span><span></span></div>
+
+  <!-- Screen 1: Register / Login -->
+  <section id="s-auth">
+    <h1>Food donor account</h1>
+    <p class="lead">Register once, then donate leftover food from any event.</p>
+    <div class="tabs"><button id="tabReg" class="on">Register</button><button id="tabLog">Log in</button></div>
+    <div class="panel" id="regForm">
+      <label>Full name <span class="tag">name : String</span></label><input id="rName" autocomplete="name">
+      <label>Phone number <span class="tag">phone : String</span></label><input id="rPhone" inputmode="numeric" maxlength="10" placeholder="10-digit mobile">
+      <label>Address <span class="tag">address : String</span></label><input id="rAddr" autocomplete="street-address">
+      <label>Password</label><input id="rPass" type="password">
+      <div class="err" id="rErr"></div>
+      <button class="primary" id="btnReg">Register <span class="tag">register()</span></button>
+    </div>
+    <div class="panel" id="logForm" hidden>
+      <label>Phone number</label><input id="lPhone" inputmode="numeric" maxlength="10">
+      <label>Password</label><input id="lPass" type="password">
+      <div class="err" id="lErr"></div>
+      <button class="primary" id="btnLog">Log in <span class="tag">login()</span></button>
+    </div>
+  </section>
+
+  <!-- Screen 2: Function hall + GPS -->
+  <section id="s-hall" hidden>
+    <h1>Where is the food?</h1>
+    <p class="lead" id="hello"></p>
+    <div class="panel">
+      <label>Function hall name <span class="tag">hallName</span></label><input id="hName" placeholder="e.g. Sri Lakshmi Convention Hall">
+      <label>Hall address <span class="tag">hallAddress</span></label><input id="hAddr">
+      <button class="ghost" id="btnGps" style="width:100%;margin-top:14px">Use my current location <span class="tag">fetchCurrentLocation()</span></button>
+      <div class="loc" id="locBox" hidden></div>
+      <details style="margin-top:10px"><summary class="hint" style="cursor:pointer">Enter coordinates manually</summary>
+        <div class="row"><div><label>Latitude</label><input id="lat" inputmode="decimal"></div><div><label>Longitude</label><input id="lng" inputmode="decimal"></div></div>
+      </details>
+      <div class="err" id="hErr"></div>
+      <button class="primary" id="btnHall">Continue to food <span class="tag">addFunctionHall()</span></button>
+    </div>
+  </section>
+
+  <!-- Screen 3: Food details -->
+  <section id="s-food" hidden>
+    <h1>What food is left?</h1>
+    <p class="lead">Tap items to add them. Enter the quantity, or the number of people it can feed, and we'll work out the other.</p>
+    <div class="panel">
+      <label>Common items</label>
+      <div class="chips" id="presetChips"></div>
+      <label style="margin-top:16px">Something else?</label>
+      <input id="cName" placeholder="Item name, e.g. Pulihora">
+      <div class="row" style="margin-top:8px">
+        <select id="cType">
+          <option value="VEG">🥬 Vegetarian</option>
+          <option value="SWEETS">🍬 Sweets</option>
+          <option value="PACKAGED">📦 Packaged Food / Water</option>
+        </select>
+        <select id="cUnit"><option value="kg">Measured in kg</option><option value="pcs">Counted in pieces</option></select>
+      </div>
+      <button class="secondary" id="btnCustom" style="width:100%;margin-top:8px">Add item</button>
+      <div class="err" id="cErr"></div>
+    </div>
+    <div class="panel">
+      <label>Food prepared at <span class="tag">preparedTime : DateTime</span></label>
+      <input type="datetime-local" id="prepTime">
+    </div>
+    <div class="panel" id="itemList"></div>
+    <div class="feeds"><b id="feedsNum">0</b><span>people can be fed<br><small class="hint" style="margin:0">Based on the item that serves the most people</small></span></div>
+    <div class="err" id="fErr"></div>
+    <button class="primary" id="btnReview">Review donation</button>
+    <button class="secondary" id="backHall" style="width:100%;margin-top:8px">Back</button>
+  </section>
+
+  <!-- Screen 4: Review -->
+  <section id="s-review" hidden>
+    <h1>Check and send</h1>
+    <p class="lead">Once sent, the pickup team will collect the food from the hall.</p>
+    <div class="panel"><dl class="summary" id="summary"></dl></div>
+    <button class="primary" id="btnSubmit">Send for pickup <span class="tag">submitDonation()</span></button>
+    <button class="secondary" id="backFood" style="width:100%;margin-top:8px">Edit food</button>
+  </section>
+
+  <!-- Screen 5: Status -->
+  <section id="s-status" hidden>
+    <h1 id="stTitle">Sent for pickup</h1>
+    <p class="lead" id="stLead"></p>
+    <div class="panel">
+      <ol class="timeline" id="timeline"></ol>
+      <div class="ext"><b>Pickup Logistics</b> <span class="tag">«external module»</span><br>Handled by the pickup team. Driver and timing details will show here once they accept.</div>
+    </div>
+    <div class="btnrow" id="stBtns">
+      <button class="ghost" id="btnStatus">Check status <span class="tag">viewPickupStatus()</span></button>
+      <button class="danger" id="btnCancel">Cancel donation <span class="tag">cancelDonation()</span></button>
+    </div>
+    <button class="primary" id="btnNew">Donate again</button>
+  </section>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+/* ===== Model classes, following the class diagram ===== */
+const FoodType = Object.freeze({ VEG:"VEG", SWEETS:"SWEETS", PACKAGED:"PACKAGED" });
+const TypeLabel = { VEG:"Veg 🥬", SWEETS:"Sweets 🍬", PACKAGED:"Packaged 📦" };
+
+class GPSLocation {
+  constructor(latitude = null, longitude = null){ this.latitude = latitude; this.longitude = longitude; }
+  fetchCurrentLocation(){
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) return reject(new Error("Location isn't supported on this device. Enter coordinates manually."));
+      navigator.geolocation.getCurrentPosition(
+        p => { this.latitude = p.coords.latitude; this.longitude = p.coords.longitude; resolve(this); },
+        e => reject(new Error(e.code === 1 ? "Location permission was denied. Allow it in your browser, or enter coordinates manually." : "Couldn't get your location. Try again or enter coordinates manually.")),
+        { enableHighAccuracy:true, timeout:10000 });
+    });
+  }
+}
+
+class FunctionHall {
+  constructor(hallName, hallAddress, gps){ this.hallId = "H" + Date.now(); this.hallName = hallName; this.hallAddress = hallAddress; this.gps = gps; }
+  getGPSLocation(){ return this.gps; }
+}
+
+class FoodDetails {
+  // perPerson: serving size per person for each unit this item supports
+  constructor(name, foodType, perPerson, unit, emoji = null){
+    this.foodId = "F" + Math.random().toString(36).slice(2, 8);
+    this.name = name; this.foodType = foodType; this.perPerson = perPerson;
+    this.unit = unit; this.quantity = 0;
+    this.emoji = emoji || (foodType === "SWEETS" ? "🍬" : (foodType === "PACKAGED" ? "📦" : "🥬"));
+  }
+  setQuantity(qty){ this.quantity = Math.max(0, Number(qty) || 0); }
+  setFoodType(type){ this.foodType = type; }
+  peopleFed(){ return Math.floor(this.quantity / this.perPerson[this.unit]); }
+  setFromPeople(n){ this.quantity = +(Math.max(0, n) * this.perPerson[this.unit]).toFixed(2); }
+  sendToPickup(){ return PickupLogistics.receive(this); }
+}
+
+/* External module – owned by another team, stubbed here */
+const PickupLogistics = { receive(){ return "Waiting for pickup team to accept"; } };
+
+let dbClient = null;
+function getSupabase(){
+  if (dbClient) return dbClient;
+  const cfg = window.__CONFIG__ || {};
+  const url = cfg.SUPABASE_URL || localStorage.getItem("aa:supabase_url") || "";
+  const key = cfg.SUPABASE_PUBLISHABLE_KEY || localStorage.getItem("aa:supabase_key") || "";
+  if (url && key && !url.includes("your-project-id") && typeof window.supabase !== "undefined") {
+    try {
+      dbClient = window.supabase.createClient(url, key);
+    } catch (e) {
+      console.warn("Could not create Supabase client:", e);
+    }
+  }
+  return dbClient;
+}
+
+class FoodDonor {
+  constructor(name, phone, address, donorId = null){
+    this.donorId = donorId || ("D" + phone);
+    this.name = name;
+    this.phone = phone;
+    this.address = address;
+    this.halls = [];
+    this.foods = [];
+    this.status = null;
+    this.currentDonationId = null;
+  }
+
+  static async register(name, phone, address, password){
+    const client = getSupabase();
+    let dbId = null;
+    if (client) {
+      try {
+        const { data, error } = await client.rpc("register_donor", {
+          p_name: name,
+          p_phone: phone,
+          p_address: address,
+          p_password: password
+        });
+        if (error) {
+          const { data: insData, error: insErr } = await client
+            .from("donors")
+            .insert([{ name, phone, address, password_hash: password }])
+            .select()
+            .single();
+          if (insErr && !insErr.message.includes("duplicate")) throw insErr;
+          if (insData) dbId = insData.id;
+        } else if (data) {
+          dbId = data.id;
+        }
+      } catch (err) {
+        console.warn("Supabase register error:", err.message);
+        if (err.message && err.message.includes("already registered")) {
+          throw new Error("This phone number is already registered. Please log in.");
+        }
+      }
+    }
+    const d = new FoodDonor(name, phone, address, dbId);
+    Store.set("donor:" + phone, { name, phone, address, password, id: dbId });
+    return d;
+  }
+
+  static async login(phone, password){
+    const client = getSupabase();
+    if (client) {
+      try {
+        const { data, error } = await client.rpc("login_donor", {
+          p_phone: phone,
+          p_password: password
+        });
+        if (!error && data) {
+          return new FoodDonor(data.name, data.phone, data.address, data.id);
+        }
+        const { data: rows, error: qErr } = await client
+          .from("donors")
+          .select("*")
+          .eq("phone", phone);
+        if (!qErr && rows && rows.length > 0) {
+          const found = rows[0];
+          if (found.password_hash === password) {
+            return new FoodDonor(found.name, found.phone, found.address, found.id);
+          }
+        }
+      } catch (err) {
+        console.warn("Supabase login error:", err.message);
+      }
+    }
+    const rec = Store.get("donor:" + phone);
+    if (!rec || rec.password !== password) return null;
+    return new FoodDonor(rec.name, rec.phone, rec.address, rec.id || null);
+  }
+
+  addFunctionHall(hallName, address, gps){ const h = new FunctionHall(hallName, address, gps); this.halls = [h]; return h; }
+  addFoodDetails(name, foodType, perPerson, unit, emoji = null){ const f = new FoodDetails(name, foodType, perPerson, unit, emoji); this.foods.push(f); return f; }
+
+  async submitDonation(){
+    const hall = this.halls[0];
+    const feedsCount = parseInt($("feedsNum").textContent, 10) || 0;
+    this.submittedAt = new Date();
+
+    const cfg = window.__CONFIG__ || {};
+    const apiBase = cfg.API_BASE_URL || "/api/v1";
+
+    // 1. Try Backend API first
+    try {
+      const payload = {
+        donor: {
+          name: this.name,
+          phone: this.phone,
+          address: this.address
+        },
+        hall: hall ? {
+          hallName: hall.hallName,
+          hallAddress: hall.hallAddress,
+          latitude: hall.gps ? hall.gps.latitude : null,
+          longitude: hall.gps ? hall.gps.longitude : null
+        } : null,
+        preparedTime: this.preparedTime ? new Date(this.preparedTime).toISOString() : null,
+        feedsCount: feedsCount,
+        foods: this.foods.map(f => ({
+          name: f.name,
+          foodType: f.foodType,
+          quantity: f.quantity,
+          unit: f.unit,
+          peopleFed: f.peopleFed()
+        }))
+      };
+
+      const res = await fetch(`${apiBase}/donations`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to submit donation via API");
+      }
+      this.currentDonationId = data.donationId;
+      this.status = data.statusMessage || "Waiting for pickup team to accept";
+      return { success: true, id: data.donationId };
+    } catch (apiErr) {
+      console.warn("Backend API submit failed:", apiErr.message);
+
+      // Fallback to client-side Supabase if configured
+      const client = getSupabase();
+      if (client) {
+        try {
+          // 1. Resolve donor ID in DB
+          let donorDbId = this.donorId;
+          if (!donorDbId || String(donorDbId).startsWith("D")) {
+            const { data: dRow } = await client.from("donors").select("id").eq("phone", this.phone).maybeSingle();
+            if (dRow) {
+              donorDbId = dRow.id;
+              this.donorId = donorDbId;
+            } else {
+              const { data: insD } = await client.from("donors").insert([{
+                name: this.name,
+                phone: this.phone,
+                address: this.address,
+                password_hash: "local_auth"
+              }]).select().maybeSingle();
+              if (insD) donorDbId = insD.id;
+            }
+          }
+
+          // 2. Insert function hall
+          let hallDbId = null;
+          if (hall) {
+            const { data: hRow } = await client.from("function_halls").insert([{
+              donor_id: donorDbId || null,
+              hall_name: hall.hallName,
+              hall_address: hall.hallAddress,
+              latitude: hall.gps ? hall.gps.latitude : null,
+              longitude: hall.gps ? hall.gps.longitude : null
+            }]).select().maybeSingle();
+            if (hRow) hallDbId = hRow.id;
+          }
+
+          // 3. Insert donation record
+          const { data: donRow, error: donErr } = await client.from("donations").insert([{
+            donor_id: donorDbId || null,
+            hall_id: hallDbId || null,
+            prepared_time: this.preparedTime ? new Date(this.preparedTime).toISOString() : null,
+            feeds_count: feedsCount,
+            status: "pending",
+            status_message: "Waiting for pickup team to accept"
+          }]).select().single();
+
+          if (donErr) throw donErr;
+          this.currentDonationId = donRow.id;
+
+          // 4. Insert donation items
+          if (this.foods && this.foods.length > 0) {
+            const itemRows = this.foods.map(f => ({
+              donation_id: donRow.id,
+              name: f.name,
+              food_type: f.foodType,
+              quantity: f.quantity,
+              unit: f.unit,
+              people_fed: f.peopleFed()
+            }));
+            await client.from("donation_items").insert(itemRows);
+          }
+
+          this.status = donRow.status_message || "Waiting for pickup team to accept";
+          return { success: true, id: donRow.id };
+        } catch (dbErr) {
+          console.error("Direct Supabase submit failed:", dbErr.message);
+          throw new Error(apiErr.message || dbErr.message);
+        }
+      }
+      throw apiErr;
+    }
+  }
+
+  async viewPickupStatus(){
+    const cfg = window.__CONFIG__ || {};
+    const apiBase = cfg.API_BASE_URL || "/api/v1";
+    if (this.currentDonationId) {
+      try {
+        const res = await fetch(`${apiBase}/donations/${encodeURIComponent(this.currentDonationId)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.donation) {
+            this.status = data.donation.status === "cancelled" ? "Cancelled" : (data.donation.status_message || data.donation.status);
+            return this.status;
+          }
+        }
+      } catch (e) {
+        console.warn("API status check failed:", e.message);
+      }
+      const client = getSupabase();
+      if (client) {
+        try {
+          const { data, error } = await client
+            .from("donations")
+            .select("status, status_message")
+            .eq("id", this.currentDonationId)
+            .single();
+          if (!error && data) {
+            this.status = data.status === "cancelled" ? "Cancelled" : (data.status_message || data.status);
+            return this.status;
+          }
+        } catch (e) {
+          console.warn("Status fetch failed:", e.message);
+        }
+      }
+    }
+    return this.status || "Waiting for pickup team to accept";
+  }
+
+  async cancelDonation(){
+    if (this.status === "Cancelled") return false;
+    const cfg = window.__CONFIG__ || {};
+    const apiBase = cfg.API_BASE_URL || "/api/v1";
+    if (this.currentDonationId) {
+      try {
+        const res = await fetch(`${apiBase}/donations/${encodeURIComponent(this.currentDonationId)}/cancel`, {
+          method: "PATCH"
+        });
+        if (res.ok) {
+          this.status = "Cancelled";
+          return true;
+        }
+      } catch (e) {
+        console.warn("API cancel failed:", e.message);
+      }
+      const client = getSupabase();
+      if (client) {
+        try {
+          await client
+            .from("donations")
+            .update({ status: "cancelled", status_message: "Cancelled by donor" })
+            .eq("id", this.currentDonationId);
+        } catch (e) {
+          console.warn("Supabase cancel failed:", e.message);
+        }
+      }
+    }
+    this.status = "Cancelled";
+    return true;
+  }
+}
+
+/* Small storage helper (falls back to memory if browser storage is blocked) */
+const Store = (() => { const mem = {};
+  return {
+    get(k){ try { const v = localStorage.getItem("aa:" + k); return v ? JSON.parse(v) : (mem[k] || null); } catch { return mem[k] || null; } },
+    set(k, v){ mem[k] = v; try { localStorage.setItem("aa:" + k, JSON.stringify(v)); } catch {} }
+  };
+})();
+
+/* Serving estimates per person (approximate) - Strictly Vegetarian */
+const PRESETS = [
+  { name:"Rice",           emoji:"🍚", type:"VEG",      per:{ kg:0.15 },             unit:"kg" },
+  { name:"Veg biryani",    emoji:"🍛", type:"VEG",      per:{ kg:0.25 },             unit:"kg" },
+  { name:"Dal / sambar",   emoji:"🍲", type:"VEG",      per:{ kg:0.12 },             unit:"kg" },
+  { name:"Veg curry",      emoji:"🥘", type:"VEG",      per:{ kg:0.10 },             unit:"kg" },
+  { name:"Chapati",        emoji:"🫓", type:"VEG",      per:{ pcs:3, kg:0.12 },      unit:"pcs" },
+  { name:"Puri",           emoji:"🫓", type:"VEG",      per:{ pcs:4, kg:0.12 },      unit:"pcs" },
+  { name:"Idli",           emoji:"🥟", type:"VEG",      per:{ pcs:3, kg:0.15 },      unit:"pcs" },
+  { name:"Sweets",         emoji:"🍬", type:"SWEETS",   per:{ pcs:2, kg:0.08 },      unit:"pcs" },
+  { name:"Water bottles",  emoji:"🧴", type:"PACKAGED", per:{ pcs:1 },               unit:"pcs" },
+  { name:"Snack packets",  emoji:"🥨", type:"PACKAGED", per:{ pcs:1 },               unit:"pcs" }
+];
+const DEFAULT_PER = { kg:0.2, pcs:2 };
+
+/* ===== UI ===== */
+const $ = id => document.getElementById(id);
+let donor = null, gps = new GPSLocation();
+const screens = ["s-auth","s-hall","s-food","s-review","s-status"];
+
+function show(id){
+  screens.forEach(s => $(s).hidden = s !== id);
+  const step = Math.min(screens.indexOf(id), 3);
+  [...$("steps").children].forEach((b, i) => b.classList.toggle("on", i <= step));
+  window.scrollTo({ top:0 });
+}
+function toast(msg){ const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 2200); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
+
+/* Light / dark mode */
+function currentTheme(){ const t = document.documentElement.dataset.theme; return t || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); }
+function applyTheme(t){
+  document.documentElement.dataset.theme = t;
+  $("themeBtn").textContent = t === "dark" ? "☀️ Light" : "🌙 Dark";
+  document.querySelector('meta[name="theme-color"]').content = t === "dark" ? "#101713" : "#1F5B3A";
+}
+applyTheme(Store.get("theme") || currentTheme());
+$("themeBtn").onclick = () => { const t = currentTheme() === "dark" ? "light" : "dark"; applyTheme(t); Store.set("theme", t); };
+
+/* Install on phone */
+let installEvt = null;
+const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; if (!standalone) $("installBar").hidden = false; });
+if (!standalone && /iphone|ipad|ipod/i.test(navigator.userAgent)) {
+  $("installText").textContent = "To install: tap Share, then 'Add to Home Screen'.";
+  $("installBtn").hidden = true; $("installBar").hidden = false;
+}
+$("installBtn").onclick = async () => { if (!installEvt) return; installEvt.prompt(); await installEvt.userChoice; installEvt = null; $("installBar").hidden = true; };
+$("installClose").onclick = () => $("installBar").hidden = true;
+window.addEventListener("appinstalled", () => { $("installBar").hidden = true; toast("Akshaya Ahar installed"); });
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+
+$("devToggle").onchange = e => document.body.classList.toggle("dev", e.target.checked);
+
+/* Auth */
+$("tabReg").onclick = () => { $("tabReg").classList.add("on"); $("tabLog").classList.remove("on"); $("regForm").hidden = false; $("logForm").hidden = true; };
+$("tabLog").onclick = () => { $("tabLog").classList.add("on"); $("tabReg").classList.remove("on"); $("logForm").hidden = false; $("regForm").hidden = true; };
+
+$("btnReg").onclick = async () => {
+  const n = $("rName").value.trim(), p = $("rPhone").value.trim(), a = $("rAddr").value.trim(), pw = $("rPass").value;
+  if (!n || !a) return $("rErr").textContent = "Enter your name and address.";
+  if (!/^\d{10}$/.test(p)) return $("rErr").textContent = "Phone number must be 10 digits.";
+  if (pw.length < 4) return $("rErr").textContent = "Password must be at least 4 characters.";
+  $("rErr").textContent = "";
+  const b = $("btnReg");
+  const origText = b.innerHTML;
+  b.disabled = true;
+  b.textContent = "Registering...";
+  try {
+    donor = await FoodDonor.register(n, p, a, pw);
+    toast("Registered as " + n);
+    goHall();
+  } catch (err) {
+    $("rErr").textContent = err.message || "Failed to register. Please check your details.";
+  } finally {
+    b.disabled = false;
+    b.innerHTML = origText;
+  }
+};
+
+$("btnLog").onclick = async () => {
+  const p = $("lPhone").value.trim(), pw = $("lPass").value;
+  if (!p || !pw) return $("lErr").textContent = "Enter your phone and password.";
+  $("lErr").textContent = "";
+  const b = $("btnLog");
+  const origText = b.innerHTML;
+  b.disabled = true;
+  b.textContent = "Logging in...";
+  try {
+    const d = await FoodDonor.login(p, pw);
+    if (!d) {
+      $("lErr").textContent = "Phone number or password doesn't match. Register first if you're new.";
+      return;
+    }
+    donor = d;
+    toast("Logged in as " + d.name);
+    goHall();
+  } catch (err) {
+    $("lErr").textContent = err.message || "Login failed. Please try again.";
+  } finally {
+    b.disabled = false;
+    b.innerHTML = origText;
+  }
+};
+function goHall(){ $("hello").textContent = "Hi " + donor.name + ", tell us which hall to pick the food up from."; show("s-hall"); }
+
+/* Hall + GPS */
+$("btnGps").onclick = async () => {
+  $("hErr").textContent = ""; $("btnGps").textContent = "Finding your location…";
+  try {
+    await gps.fetchCurrentLocation();
+    $("lat").value = gps.latitude.toFixed(6); $("lng").value = gps.longitude.toFixed(6);
+    $("locBox").hidden = false;
+    $("locBox").textContent = "📍 Location captured: " + gps.latitude.toFixed(5) + ", " + gps.longitude.toFixed(5);
+  } catch (e) { $("hErr").textContent = e.message; }
+  $("btnGps").innerHTML = 'Use my current location <span class="tag">fetchCurrentLocation()</span>';
+};
+$("btnHall").onclick = () => {
+  const hn = $("hName").value.trim(), ha = $("hAddr").value.trim();
+  const la = parseFloat($("lat").value), lo = parseFloat($("lng").value);
+  if (!hn || !ha) return $("hErr").textContent = "Enter the hall name and address.";
+  if (isNaN(la) || isNaN(lo)) return $("hErr").textContent = "Add the location: tap 'Use my current location' or enter coordinates.";
+  gps = new GPSLocation(la, lo);
+  donor.addFunctionHall(hn, ha, gps);
+  $("hErr").textContent = "";
+  const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  if (!$("prepTime").value) $("prepTime").value = now.toISOString().slice(0, 16);
+  renderPresets(); renderItems(); show("s-food");
+};
+
+/* Food */
+function renderPresets(){
+  const box = $("presetChips"); box.innerHTML = "";
+  PRESETS.forEach(p => {
+    const added = donor.foods.some(f => f.name === p.name);
+    const b = document.createElement("button");
+    b.className = "chip" + (added ? " added" : "");
+    b.innerHTML = `<span class="dot t-${p.type}"></span> <span style="font-size:1.15em">${p.emoji}</span> <span>${esc(p.name)}</span>${added ? " ✓" : ""}`;
+    b.onclick = () => {
+      if (added) { donor.foods = donor.foods.filter(f => f.name !== p.name); }
+      else donor.addFoodDetails(p.name, p.type, { ...p.per }, p.unit, p.emoji);
+      renderPresets(); renderItems();
+    };
+    box.appendChild(b);
+  });
+}
+$("btnCustom").onclick = () => {
+  const n = $("cName").value.trim();
+  if (!n) return $("cErr").textContent = "Type the item name first.";
+  if (/\b(chicken|mutton|fish|meat|egg|eggs|beef|pork|prawn|crab)\b/i.test(n)) {
+    return $("cErr").textContent = "Akshaya Ahar accepts strictly vegetarian food donations only.";
+  }
+  if (donor.foods.some(f => f.name.toLowerCase() === n.toLowerCase())) return $("cErr").textContent = "That item is already in the list.";
+  const u = $("cUnit").value;
+  const t = $("cType").value;
+  const emoji = t === "SWEETS" ? "🍬" : (t === "PACKAGED" ? "📦" : "🥬");
+  donor.addFoodDetails(n, t, { [u]: DEFAULT_PER[u] }, u, emoji);
+  $("cName").value = ""; $("cErr").textContent = ""; renderItems();
+};
+
+function renderItems(){
+  const box = $("itemList");
+  if (!donor.foods.length){ box.innerHTML = '<p class="empty">No food added yet. Tap an item above to start.</p>'; updateFeeds(); return; }
+  box.innerHTML = "";
+  donor.foods.forEach(f => {
+    const units = Object.keys(f.perPerson);
+    const emoji = f.emoji || (f.foodType === "SWEETS" ? "🍬" : (f.foodType === "PACKAGED" ? "📦" : "🥬"));
+    const el = document.createElement("div"); el.className = "item";
+    el.innerHTML = `
+      <div class="itemhead">
+        <span class="itemname"><span class="dot t-${f.foodType}"></span> <span style="font-size:1.15em">${emoji}</span> <span>${esc(f.name)}</span><small class="hint" style="margin:0">${TypeLabel[f.foodType] || "Veg 🥬"}</small></span>
+        <button class="remove">Remove</button>
+      </div>
+      <div class="eq">1 person ≈ ${f.perPerson[f.unit]} ${f.unit === "kg" ? "kg" : "pieces"}</div>
+      <div class="row">
+        <div><label style="margin-top:0">Quantity <span class="tag">setQuantity()</span></label>
+          <div class="row" style="gap:6px"><input class="qty" type="number" min="0" step="any" inputmode="decimal" value="${f.quantity || ""}" placeholder="0" aria-label="Quantity of ${esc(f.name)}">
+          ${units.length > 1 ? `<div class="unit">${units.map(u => `<button data-u="${u}" class="${u === f.unit ? "on" : ""}">${u === "kg" ? "kg" : "pcs"}</button>`).join("")}</div>` : `<span style="flex:none;align-self:center;color:var(--muted)">${f.unit === "kg" ? "kg" : "pcs"}</span>`}</div>
+        </div>
+        <div style="flex:.7"><label style="margin-top:0">Feeds</label><input class="ppl" type="number" min="0" step="1" inputmode="numeric" value="${f.quantity ? f.peopleFed() : ""}" placeholder="people" aria-label="People fed by ${esc(f.name)}"></div>
+      </div>`;
+    const qty = el.querySelector(".qty"), ppl = el.querySelector(".ppl");
+    qty.oninput = () => { f.setQuantity(qty.value); ppl.value = qty.value ? f.peopleFed() : ""; updateFeeds(); };
+    ppl.oninput = () => { f.setFromPeople(parseInt(ppl.value) || 0); qty.value = ppl.value ? f.quantity : ""; updateFeeds(); };
+    el.querySelectorAll(".unit button").forEach(b => b.onclick = () => {
+      const people = f.peopleFed(); f.unit = b.dataset.u; f.setFromPeople(people); renderItems();
+    });
+    el.querySelector(".remove").onclick = () => { donor.foods = donor.foods.filter(x => x !== f); renderPresets(); renderItems(); };
+    box.appendChild(el);
+  });
+  updateFeeds();
+}
+function updateFeeds(){ $("feedsNum").textContent = donor.foods.reduce((m, f) => Math.max(m, f.quantity ? f.peopleFed() : 0), 0); }
+
+$("backHall").onclick = () => show("s-hall");
+$("btnReview").onclick = () => {
+  const filled = donor.foods.filter(f => f.quantity > 0);
+  if (!filled.length) return $("fErr").textContent = "Add at least one item with a quantity.";
+  $("fErr").textContent = "";
+  donor.foods = filled; donor.preparedTime = $("prepTime").value;
+  const h = donor.halls[0];
+  $("summary").innerHTML = `
+    <dt>Donor</dt><dd>${esc(donor.name)}, ${esc(donor.phone)}</dd>
+    <dt>Pickup from</dt><dd>${esc(h.hallName)}<br>${esc(h.hallAddress)}<br><small class="hint">GPS ${h.gps.latitude.toFixed(5)}, ${h.gps.longitude.toFixed(5)}</small></dd>
+    <dt>Prepared at</dt><dd>${donor.preparedTime ? new Date(donor.preparedTime).toLocaleString() : "Not set"}</dd>
+    <dt>Food</dt><dd>${filled.map(f => `${f.emoji || "🥬"} ${esc(f.name)}: ${f.quantity} ${f.unit === "kg" ? "kg" : "pcs"} (≈${f.peopleFed()} people)`).join("<br>")}</dd>
+    <dt>Can feed about</dt><dd>${$("feedsNum").textContent} people</dd>`;
+  show("s-review");
+};
+$("backFood").onclick = () => { renderPresets(); renderItems(); show("s-food"); };
+
+/* Submit + status */
+$("btnSubmit").onclick = async () => {
+  const b = $("btnSubmit");
+  const origText = b.innerHTML;
+  b.disabled = true;
+  b.textContent = "Sending for pickup...";
+  try {
+    await donor.submitDonation();
+    renderStatus();
+    show("s-status");
+    toast("Sent for pickup");
+  } catch (err) {
+    toast("Submission error: " + (err.message || "Failed to submit. Try again."));
+  } finally {
+    b.disabled = false;
+    b.innerHTML = origText;
+  }
+};
+
+function renderStatus(){
+  const cancelled = donor.status === "Cancelled";
+  const t = donor.submittedAt ? donor.submittedAt.toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" }) : "";
+  $("stTitle").textContent = cancelled ? "Donation cancelled" : "Sent for pickup";
+  $("stLead").textContent = cancelled ? "The pickup team has been told not to come." : "Thank you. Keep the food covered until the pickup team arrives.";
+  $("timeline").innerHTML = cancelled
+    ? `<li class="done">Donation sent<small>${t}</small></li><li class="now">Cancelled by you</li>`
+    : `<li class="done">Donation sent<small>${t}</small></li><li class="now">${esc(donor.status || "Waiting for pickup team to accept")}</li><li>Food picked up</li><li>Delivered to NGO</li>`;
+  $("stBtns").hidden = cancelled;
+}
+
+$("btnStatus").onclick = async () => {
+  const b = $("btnStatus");
+  b.disabled = true;
+  const s = await donor.viewPickupStatus();
+  renderStatus();
+  toast("Status: " + s);
+  b.disabled = false;
+};
+
+$("btnCancel").onclick = async () => {
+  const b = $("btnCancel");
+  if (!b.dataset.sure) {
+    b.dataset.sure = "1";
+    b.textContent = "Tap again to cancel";
+    setTimeout(() => { delete b.dataset.sure; b.innerHTML = 'Cancel donation <span class="tag">cancelDonation()</span>'; }, 3000);
+    return;
+  }
+  delete b.dataset.sure;
+  b.innerHTML = 'Cancel donation <span class="tag">cancelDonation()</span>';
+  b.disabled = true;
+  const ok = await donor.cancelDonation();
+  b.disabled = false;
+  if (ok) {
+    renderStatus();
+    toast("Donation cancelled");
+  }
+};
+$("btnNew").onclick = () => { donor.foods = []; donor.status = null; renderPresets(); renderItems(); show("s-hall"); };
+
+show("s-auth");
+</script>
+</body>
+</html>

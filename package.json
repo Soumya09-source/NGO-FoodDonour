@@ -1,0 +1,17 @@
+{
+  "name": "akshaya-ahar-app",
+  "version": "1.0.0",
+  "description": "Akshaya Ahar - Food Donor Progressive Web Application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check-env": "node validate-env.js"
+  },
+  "keywords": [
+    "food-donation",
+    "pwa",
+    "supabase"
+  ],
+  "author": "",
+  "license": "ISC"
+}
